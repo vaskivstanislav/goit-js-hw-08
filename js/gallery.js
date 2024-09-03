@@ -66,3 +66,43 @@ const images = [
     },
   ];
   
+  const container = document.querySelector(".gallery");
+    
+  container.insertAdjacentHTML('beforeend', generateMarkupGallery(images));
+
+  function generateMarkupGallery(images) {
+    return images.map(image => {
+      return `
+        <li class="gallery-item js-image-item">
+        <a class="gallery-link" href="${image.original}">
+        <img
+        class="gallery-image"
+        src="${image.preview}"
+        data-source="${image.original}"
+        alt="${image.description}"
+        />
+        </a>
+        </li>
+        `;   
+      })
+      .join("");
+  }
+  container.addEventListener('click', onClickImage);
+
+  function onClickImage(event) {
+    event.preventDefault(); 
+      if(event.target.nodeName !== 'IMG') {
+          return;
+      }
+      
+      const currentImage = images.find(image => image.original === event.target.dataset.source);
+
+      if (!currentImage) {
+        return;
+      }
+
+      const instance = basicLightbox.create(`
+        <img src="${currentImage.original}" width="1112" height="640">
+      `);
+          instance.show();
+      }
